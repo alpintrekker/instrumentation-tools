@@ -18,7 +18,7 @@ def send_cmd(cmd,data):
     ser_cmd = (cmd << 10) | (data & ((1<<10)-1))
     w0 = ser_cmd >> 8
     w1 = ser_cmd & ((1<<8)-1)
-    return spi.xfer([w0, w1])
+    return [w0, w1]
 
  # write to RDAC
 spi.xfer(list(struct.unpack('BB', struct.pack('>H', 1 << 10 | 0))))
@@ -46,7 +46,7 @@ spi.writebytes([0x0,0x0])
 spi.xfer([0x0,0x0])
 spi.xfer([0x18,0x02])
 spi.xfer([0x05,0x00])
-spi.xfer([0x008,0x0])
+spi.xfer([0x08,0x0])
 spi.xfer([0x0,0x0])
 
 
