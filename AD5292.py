@@ -1,5 +1,6 @@
 from mcp2210 import MCP2210
 from mcp2210 import commands
+import struct
 dev = MCP2210(0x04D8, 0x00DE)
 
 class AD5292:
@@ -28,8 +29,9 @@ class AD5292:
     def set_wiper(self, pos):
         self._prepare_spi()
         self.dev.transfer('\x00\x00')   # NoOp
-        self.dev.transfer('\x18\x02')   # Enable write to RDAC
-        self.dev.transfer('\x05\x00')   # TODO bit tweak pos here
+        self.dev.transfer('\x18\x02')   # allow update of wiper position through digital Interface
+        self.dev.transfer(
+            struct.pack('H',(1 << 10) | (pos & ((1<<10)-1))))   # TODO bit tweak pos here
         self.dev.transfer('\x08\x00')   # prepare read back of RDAC
         self.dev.transfer('\x00\x00')   # NoOp, last 10 bits of
                                         # the returned 16 bit word is

@@ -54,3 +54,6 @@ class voltage_divider:
     def __init__(self):
         self.R1 = 1e20
         self.R2 = 1e20
+
+
+
