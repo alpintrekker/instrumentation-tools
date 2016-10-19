@@ -27,11 +27,11 @@ class AD5292:
         self.dev.transfer_settings = self.curr_transfer_settings
 
     def set_wiper(self, pos):
-        self._prepare_spi()
+        # self._prepare_spi()
         self.dev.transfer('\x00\x00')   # NoOp
         self.dev.transfer('\x18\x02')   # allow update of wiper position through digital Interface
         self.dev.transfer(
-            struct.pack('H',(1 << 10) | (pos & ((1<<10)-1))))   # TODO bit tweak pos here
+            struct.pack('>H',(1 << 10) | (pos & ((1<<10)-1))))   # convert to LE, aka > formatting character
         self.dev.transfer('\x08\x00')   # prepare read back of RDAC
         self.dev.transfer('\x00\x00')   # NoOp, last 10 bits of
                                         # the returned 16 bit word is
