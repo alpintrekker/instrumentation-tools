@@ -5,10 +5,10 @@ psu_pin = "P9_15"
 fan_pin = "P9_14"
 H1_pin = "P8_13"
 H2_pin = "P9_42"
+H1 = None
+H2 = None
 
 def oven_init():
-    # H1 = Heater(H1_pin, 1)
-    # H2 = Heater(H2_pin, 1)
     fan_init()
     psu_on()
 
@@ -47,4 +47,6 @@ class Heater():
         PWM.set_duty_cycle(self.pin, duty)
 
 
+H1 = Heater(H1_pin, 1)
+H2 = Heater(H2_pin, 1)
 
