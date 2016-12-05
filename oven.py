@@ -50,3 +50,10 @@ class Heater():
 H1 = Heater(H1_pin, 1)
 H2 = Heater(H2_pin, 1)
 
+oven_init()
+
+time.sleep(50)
+H1.set_duty(0)
+H2.set_duty(0)
+time.sleep(10)
+fan_off()
