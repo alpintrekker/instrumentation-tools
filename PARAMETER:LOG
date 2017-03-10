@@ -1,0 +1,3 @@
+timestps, data = r.read_n_sample_w_config(8096, readconfig['A67_IDAC2_1mA_A8_REF_A45'])
+np.mean(tc(data) / 2.0**31) 0.10007814652112307
+np.std(tc(data) / 2.0**31)  4.7661924605130384e-07
