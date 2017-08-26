@@ -444,8 +444,8 @@ r.sfoCal()
     ar = AdcReader(r, readconfig)
     ar.start()
 
-    o.H1.set_duty(42)
-    o.H2.set_duty(42)
+    o.H1.set_duty(0)
+    o.H2.set_duty(0)
 
     ar.save_log()
     o.H1.set_duty(0)

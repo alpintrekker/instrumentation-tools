@@ -3,6 +3,7 @@ from Adafruit_BBIO.SPI import SPI
 from datetime import datetime
 import paho.mqtt.client as mqtt
 import json
+import threading
 
 
 class Ads126x:
@@ -14,6 +15,9 @@ class Ads126x:
         self.Spi = spi
         self.chip = x
         self.gpio_init()
+        self.free = threading.Event()
+        self.free.set()
+        self.current_config = None
 
     def gpio_init(self):
         GPIO.setup(self.RstnPin, GPIO.OUT, pull_up_down=GPIO.PUD_UP)
@@ -77,6 +81,7 @@ class Ads126x:
             GPIO.wait_for_edge(self.DrdyPin, GPIO.FALLING)
             tst = datetime.utcnow().isoformat()
             read_data.append((tst, self.read_adc_data()))
+        self.stop_conversion()
         return read_data
 
 
@@ -101,7 +106,12 @@ def on_message(client, userdata, msg):
                                     known_ADS_devices[dev_id]['_spi'])
             ads_s[dev_id].power_up()
             ads_s[dev_id].sfo_cal()
+
+
     if topic[1] == 'READ':
+        # wait for device become available
+        ads_s[dev_id].free.wait()
+        ads_s[dev_id].free.clear()
         print(topic)
         c = int(topic[3])
         msg.topic = msg.topic.replace('ADS_controller/', '')
@@ -109,8 +119,10 @@ def on_message(client, userdata, msg):
         # print(dev_id, c)
         n = int(msg.payload)
         s = ads_s[dev_id].read_n_sample_w_config(n, known_ADS_devices[dev_id]['readconfigs'][c])
+        ads_s[dev_id].free.set()
         t = "ADS_controller/DATA/" + str(dev_id) + '/' + str(c)
         client.publish(t, json.dumps(s))
+
 #
 # _START_PIN = "P9_23"
 # _RSTN_PIN = "P9_24"
